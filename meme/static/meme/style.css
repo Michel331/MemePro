@@ -1,0 +1,403 @@
+/* === Variables Globales === */
+:root {
+    --primary-color: #6a11cb; /* Violet profond */
+    --secondary-color: #2575fc; /* Bleu vibrant */
+    --accent-color: #ff5722; /* Orange pour les accents */
+    --text-color: #333;
+    --light-text-color: #fff;
+    --bg-color: #f4f7f6; /* Fond général clair */
+    --card-bg-color: #ffffff;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+/* === Réinitialisation et Styles de Base === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+main.container {
+    flex-grow: 1;
+    padding-top: 20px;
+    padding-bottom: 40px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--primary-color);
+    font-size: 2.5em;
+    font-weight: 700;
+}
+
+/* === Barre de Navigation === */
+.navbar {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: var(--light-text-color);
+    padding: 15px 0;
+    box-shadow: var(--box-shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--light-text-color);
+    text-decoration: none;
+}
+
+.navbar-nav {
+    list-style: none;
+    display: flex;
+}
+
+.navbar-nav li {
+    margin-left: 25px;
+}
+
+.navbar-nav a {
+    color: var(--light-text-color);
+    text-decoration: none;
+    font-size: 1.1em;
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar-nav a:hover, .navbar-nav a.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+/* === Pied de Page === */
+footer {
+    background-color: #333;
+    color: var(--light-text-color);
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.9em;
+}
+
+/* === Boutons === */
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    border: none;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: var(--light-text-color);
+}
+
+.btn-primary:hover {
+    background-color: darken(var(--accent-color), 10%);
+    transform: translateY(-2px);
+}
+
+.btn-download {
+    background-color: var(--secondary-color);
+    color: var(--light-text-color);
+    font-size: 0.9em;
+    padding: 8px 15px;
+}
+
+.btn-download:hover {
+    background-color: darken(var(--secondary-color), 10%);
+    transform: translateY(-1px);
+}
+
+/* === Formulaires (pour meme_create.html) === */
+.form-styled {
+    background-color: var(--card-bg-color);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.form-group input[type="text"],
+.form-group input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1em;
+}
+
+.form-group input[type="file"] {
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.form-actions {
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* === Aperçu du Mème (meme_create.html) === */
+#meme-preview-container {
+    position: relative;
+    width: fit-content;
+    max-width: 100%; /* S'assure qu'il ne dépasse pas le conteneur parent */
+    margin: 30px auto;
+    border: 3px dashed var(--secondary-color);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    background-color: #e9ecef; /* Fond légèrement différent */
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+#meme-canvas {
+    display: block;
+    max-width: 100%; /* Canvas responsive à l'intérieur du conteneur */
+    height: auto;
+    background-color: var(--card-bg-color);
+    border-radius: calc(var(--border-radius) - 5px); /* Pour s'adapter au padding */
+}
+
+/* === Galerie de Mèmes (meme_gallery.html) === */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.gallery-item {
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden; /* Pour que l'image ne dépasse pas les coins arrondis */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1; /* Pourrait être ajusté, force un carré */
+    object-fit: cover; /* Assure que l'image couvre bien, peut couper un peu */
+    border-bottom: 1px solid #eee;
+}
+
+.gallery-item-info {
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+.gallery-item-info p small {
+    color: #777;
+    font-size: 0.85em;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.gallery-item-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.btn-copy-link {
+    background-color: #f0f0f0;
+    color: var(--text-color);
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: relative;
+}
+
+.btn-copy-link:hover {
+    background-color: #e0e0e0;
+}
+
+.btn-copy-link svg {
+    vertical-align: middle;
+}
+
+.btn-copy-link .copy-feedback {
+    font-size: 0.8em;
+    color: var(--accent-color);
+    margin-left: 5px;
+}
+
+.btn-copy-link.copied {
+    border-color: var(--accent-color);
+}
+
+.empty-gallery {
+    grid-column: 1 / -1; /* Prend toute la largeur si la galerie est vide */
+    text-align: center;
+    font-size: 1.2em;
+    color: #777;
+    padding: 40px 0;
+}
+
+.empty-gallery a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* === Messages Django === */
+.messages-container {
+    margin-bottom: 20px;
+}
+
+.message {
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 10px;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-size: 0.95em;
+}
+
+.message.success {
+    background-color: #d4edda; /* Vert clair */
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background-color: #f8d7da; /* Rouge clair */
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.message.warning {
+    background-color: #fff3cd; /* Jaune clair */
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.message.info {
+    background-color: #d1ecf1; /* Bleu clair */
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.close-message {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: inherit;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.close-message:hover {
+    opacity: 1;
+}
+
+/* === Responsive Design === */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+    .navbar .container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .navbar-nav {
+        margin-top: 10px;
+        width: 100%;
+        flex-direction: column;
+    }
+    .navbar-nav li {
+        margin-left: 0;
+        margin-bottom: 5px;
+        width: 100%;
+    }
+    .navbar-nav a {
+        display: block;
+        text-align: center;
+    }
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 95%;
+    }
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+    #meme-preview-container {
+        padding: 10px;
+    }
+    .form-styled {
+        padding: 20px;
+    }
+    .gallery-grid {
+        grid-template-columns: 1fr; /* Une colonne sur mobile */
+    }
+} 

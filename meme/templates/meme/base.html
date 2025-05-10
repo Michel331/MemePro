@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Générateur de Mèmes{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'meme/style.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'meme_create' %}">MèmePro</a>
+            <ul class="navbar-nav">
+                <li><a href="{% url 'meme_create' %}">Générer un Mème</a></li>
+                <li><a href="{% url 'meme_gallery' %}">Galerie</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                        <span class="close-message" onclick="this.parentElement.style.display='none';">&times;</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 MèmePro - Créé avec Passion (et Django)</p>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

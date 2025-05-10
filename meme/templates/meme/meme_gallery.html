@@ -1,0 +1,52 @@
+{% extends 'meme/base.html' %}
+{% load static %}
+
+{% block title %}Galerie des Mèmes - MèmePro{% endblock %}
+
+{% block content %}
+<h1>Galerie des Mèmes</h1>
+
+<div class="gallery-grid">
+    {% for meme in memes %}
+        <div class="gallery-item">
+            <img src="{{ meme.generated_image.url }}" alt="Mème {{ meme.id }}" class="gallery-image">
+            <div class="gallery-item-info">
+                <p><small>Créé le {{ meme.created_at|date:"d/m/Y H:i" }}</small></p>
+                <div class="gallery-item-actions">
+                    <a href="{{ meme.generated_image.url }}" download="meme_{{ meme.id }}.jpg" class="btn btn-download">Télécharger</a>
+                    <button class="btn btn-copy-link" title="Copier le lien" onclick="copyMemeLink('{{ request.scheme }}://{{ request.get_host }}{{ meme.generated_image.url }}', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><path fill="currentColor" d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/></svg>
+                        <span class="copy-feedback"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p class="empty-gallery">Aucun mème pour le moment. <a href="{% url 'meme_create' %}">Créez-en un !</a></p>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyMemeLink(url, buttonElement) {
+    navigator.clipboard.writeText(url).then(() => {
+        const feedbackSpan = buttonElement.querySelector('.copy-feedback');
+        buttonElement.classList.add('copied');
+        feedbackSpan.textContent = 'Copié!';
+        setTimeout(() => {
+            buttonElement.classList.remove('copied');
+            feedbackSpan.textContent = '';
+        }, 2000);
+    }).catch(err => {
+        console.error('Erreur lors de la copie du lien: ', err);
+        const feedbackSpan = buttonElement.querySelector('.copy-feedback');
+        feedbackSpan.textContent = 'Erreur';
+        setTimeout(() => {
+            feedbackSpan.textContent = '';
+        }, 2000);
+    });
+}
+</script>
+{% endblock %} 
