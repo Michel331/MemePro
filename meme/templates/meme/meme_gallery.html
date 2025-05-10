@@ -14,10 +14,19 @@
                 <p><small>Créé le {{ meme.created_at|date:"d/m/Y H:i" }}</small></p>
                 <div class="gallery-item-actions">
                     <a href="{{ meme.generated_image.url }}" download="meme_{{ meme.id }}.jpg" class="btn btn-download">Télécharger</a>
-                    <button class="btn btn-copy-link" title="Copier le lien" onclick="copyMemeLink('{{ request.scheme }}://{{ request.get_host }}{{ meme.generated_image.url }}', this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><path fill="currentColor" d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/></svg>
-                        <span class="copy-feedback"></span>
-                    </button>
+                    
+                    <div class="share-container">
+                        <button class="btn btn-share" title="Partager" onclick="toggleShareOptions('{{ meme.id }}', '{{ request.scheme }}://{{ request.get_host }}{{ meme.generated_image.url }}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path fill="currentColor" d="M472 208H304a8 8 0 0 0-8 8v16a8 8 0 0 0 8 8h168a8 8 0 0 0 8-8v-16a8 8 0 0 0-8-8Zm0 128H304a8 8 0 0 0-8 8v16a8 8 0 0 0 8 8h168a8 8 0 0 0 8-8v-16a8 8 0 0 0-8-8ZM40.5 256.5a24 24 0 1 1 0-48 24 24 0 0 1 0 48Zm0 128a24 24 0 1 1 0-48 24 24 0 0 1 0 48ZM256.5 40.5a24 24 0 1 1 -48 0 24 24 0 0 1 48 0Zm0 128a24 24 0 1 1 -48 0 24 24 0 0 1 48 0Zm0 256a24 24 0 1 1 -48 0 24 24 0 0 1 48 0ZM170.4 134.6a8 8 0 0 0-11.3 0L70.6 223.1a8 8 0 0 0 0 11.3l90.5 90.5a8 8 0 0 0 11.3-11.3L87.3 228.8l81.1-81.1a8 8 0 0 0 2-11.3Zm0 256a8 8 0 0 0-11.3 0L70.6 479.1a8 8 0 0 0 0 11.3l90.5 90.5a8 8 0 0 0 11.3-11.3l-81.4-81.4 81.1-81.1a8 8 0 0 0 2-11.3Z M341.6 134.6a8 8 0 0 0 11.3 0l88.5-88.5a8 8 0 0 0 0-11.3l-90.5-90.5a8 8 0 0 0-11.3 11.3l81.4 81.4-81.1 81.1a8 8 0 0 0 -2 11.3Zm0 256a8 8 0 0 0 11.3 0l88.5-88.5a8 8 0 0 0 0-11.3l-90.5-90.5a8 8 0 0 0-11.3 11.3l81.4 81.4-81.1 81.1a8 8 0 0 0 -2 11.3Z "/></svg>
+                        </button>
+                        <div id="share-options-{{ meme.id }}" class="share-options" style="display: none;">
+                            <a href="#" class="share-link facebook" target="_blank">Facebook</a>
+                            <a href="#" class="share-link twitter" target="_blank">Twitter</a>
+                            <a href="#" class="share-link whatsapp" target="_blank">WhatsApp</a>
+                            <input type="text" value="{{ request.scheme }}://{{ request.get_host }}{{ meme.generated_image.url }}" class="share-url-input" readonly>
+                            <button class="btn btn-copy-direct" onclick="copyDirectLink(this)">Copier lien</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -30,23 +39,89 @@
 
 {% block extra_js %}
 <script>
-function copyMemeLink(url, buttonElement) {
-    navigator.clipboard.writeText(url).then(() => {
-        const feedbackSpan = buttonElement.querySelector('.copy-feedback');
-        buttonElement.classList.add('copied');
-        feedbackSpan.textContent = 'Copié!';
+function toggleShareOptions(memeId, memeUrl) {
+    const optionsDiv = document.getElementById('share-options-' + memeId);
+    const currentGalleryItem = optionsDiv.closest('.gallery-item'); // Je récupère l'élément .gallery-item parent de ce menu
+
+    // Je m'assure que les autres menus de partage sont fermés et que leur .gallery-item n'est plus actif
+    document.querySelectorAll('.gallery-item.sharing-active').forEach(item => {
+        if (item !== currentGalleryItem) { // Je ne touche pas à l'item courant s'il était déjà actif
+            item.classList.remove('sharing-active');
+            const otherOptionsDiv = item.querySelector('.share-options');
+            if (otherOptionsDiv) {
+                otherOptionsDiv.style.display = 'none';
+            }
+        }
+    });
+
+    if (optionsDiv.style.display === 'none') {
+        // J'affiche le menu cliqué et j'active son .gallery-item parent
+        optionsDiv.style.display = 'block';
+        if (currentGalleryItem) {
+            currentGalleryItem.classList.add('sharing-active');
+        }
+
+        // Je mets à jour les URLs des liens de partage
+        const encodedMemeUrl = encodeURIComponent(memeUrl);
+        const memeTitle = encodeURIComponent("Regardez ce mème !");
+
+        optionsDiv.querySelector('.facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${encodedMemeUrl}`;
+        optionsDiv.querySelector('.twitter').href = `https://twitter.com/intent/tweet?url=${encodedMemeUrl}&text=${memeTitle}`;
+        optionsDiv.querySelector('.whatsapp').href = `https://api.whatsapp.com/send?text=${memeTitle}%20${encodedMemeUrl}`;
+        optionsDiv.querySelector('.share-url-input').value = memeUrl;
+
+    } else {
+        // Si le menu était déjà ouvert, je le cache et désactive son .gallery-item parent
+        optionsDiv.style.display = 'none';
+        if (currentGalleryItem) {
+            currentGalleryItem.classList.remove('sharing-active');
+        }
+    }
+}
+
+function copyDirectLink(buttonElement) {
+    const inputElement = buttonElement.previousElementSibling; // L'input est juste avant ce bouton
+    inputElement.select(); // Je sélectionne le contenu de l'input
+    inputElement.setSelectionRange(0, 99999); // Pour compatibilité mobile
+
+    navigator.clipboard.writeText(inputElement.value).then(() => {
+        const originalText = buttonElement.textContent;
+        buttonElement.textContent = 'Copié!';
         setTimeout(() => {
-            buttonElement.classList.remove('copied');
-            feedbackSpan.textContent = '';
+            buttonElement.textContent = originalText;
         }, 2000);
     }).catch(err => {
-        console.error('Erreur lors de la copie du lien: ', err);
-        const feedbackSpan = buttonElement.querySelector('.copy-feedback');
-        feedbackSpan.textContent = 'Erreur';
+        console.error('Erreur lors de la copie directe du lien: ', err);
+        buttonElement.textContent = 'Erreur';
+        const originalText = buttonElement.textContent;
         setTimeout(() => {
-            feedbackSpan.textContent = '';
+            buttonElement.textContent = originalText;
         }, 2000);
     });
 }
+
+// Si je clique en dehors d'un menu de partage, je le ferme.
+document.addEventListener('click', function(event) {
+    const shareContainers = document.querySelectorAll('.share-container');
+    let clickedInsideShareContainer = false;
+    shareContainers.forEach(container => {
+        if (container.contains(event.target)) {
+            clickedInsideShareContainer = true;
+        }
+    });
+
+    if (!clickedInsideShareContainer) {
+        document.querySelectorAll('.share-options').forEach(div => {
+            if (div.style.display !== 'none') { // Je traite seulement si le div était visible
+                div.style.display = 'none';
+                const galleryItem = div.closest('.gallery-item');
+                if (galleryItem) {
+                    galleryItem.classList.remove('sharing-active');
+                }
+            }
+        });
+    }
+});
+
 </script>
 {% endblock %} 

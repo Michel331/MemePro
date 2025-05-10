@@ -117,7 +117,7 @@
 
 {% block extra_js %}
 <script>
-    // --- Références aux éléments du DOM --- //
+    // --- Mes références aux éléments du DOM --- //
     const canvas = document.getElementById('meme-canvas');
     const ctx = canvas.getContext('2d');
     const originalImageInput = document.getElementById('original_image_input');
@@ -125,29 +125,29 @@
     const bottomTextInput = document.getElementById('bottom_text_input');
     const fontSelectionInput = document.getElementById('font_selection_input');
     const memeForm = document.getElementById('meme-form');
-    // L'élément <img> est utilisé pour charger l'image avant de la dessiner sur le canvas
+    // Image temporaire pour préchargement avant dessin sur canvas.
     const tempImage = new Image(); 
 
-    // --- Constantes de configuration pour le dessin --- //
-    const CANVAS_MAX_WIDTH_PREVIEW = 500; // Largeur max de l'image dans l'aperçu
-    const DEFAULT_FONT_FAMILY_CANVAS = 'Arial'; // Police de secours pour le canvas
+    // --- Mes constantes de configuration pour le dessin --- //
+    const CANVAS_MAX_WIDTH_PREVIEW = 500; // Largeur max de l'aperçu.
+    const DEFAULT_FONT_FAMILY_CANVAS = 'Arial'; // Police de secours canvas.
     const TEXT_COLOR_CANVAS = 'white';
     const TEXT_OUTLINE_COLOR_CANVAS = 'black';
 
-    // --- Fonctions de dessin sur le Canvas --- //
+    // --- Mes fonctions de dessin sur le Canvas --- //
 
     /**
-     * Efface le canvas et affiche un message si aucune image n'est chargée.
+     * J'efface le canvas et j'affiche un message si aucune image.
      */
     function initializeOrClearCanvas(message = "Chargez une image") {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         if (!tempImage.src || tempImage.naturalWidth === 0) {
-            // Si le canvas n'a pas de dimensions, lui en donner des initiales
+            // Si canvas sans dimensions, je donne des initiales.
             if (canvas.width === 0 || canvas.height === 0) {
                 const previewContainer = document.getElementById('meme-preview-container');
-                const containerWidth = previewContainer.offsetWidth > 0 ? previewContainer.offsetWidth - 20 : CANVAS_MAX_WIDTH_PREVIEW; // -20 pour padding
-                canvas.width = containerWidth;
-                canvas.height = canvas.width * (3/4); // Ratio 4:3 par défaut
+                const containerWidth = previewContainer.offsetWidth > 0 ? previewContainer.offsetWidth - 20 : CANVAS_MAX_WIDTH_PREVIEW; // -20 pour padding.
+                canvas.width = containerWidth; 
+                canvas.height = canvas.width * (3/4); // Ratio 4:3 par défaut.
             }
             ctx.font = "20px " + DEFAULT_FONT_FAMILY_CANVAS;
             ctx.textAlign = "center";
@@ -157,7 +157,7 @@
     }
 
     /**
-     * Dessine l'image de fond sur le canvas, en l'ajustant à la taille du canvas.
+     * Je dessine l'image de fond, ajustée à la taille du canvas.
      */
     function drawBackgroundImageOnCanvas() {
         if (tempImage.src && tempImage.complete && tempImage.naturalWidth > 0) {
@@ -166,25 +166,25 @@
     }
 
     /**
-     * Dessine un bloc de texte (avec contour) sur le canvas.
-     * @param {string} text - Le texte à dessiner.
-     * @param {number} yPosition - La coordonnée Y pour le texte.
-     * @param {string} selectedFontName - Le nom de la police à utiliser.
-     * @param {number} baseFontSize - La taille de base de la police.
+     * Je dessine un bloc de texte (avec contour).
+     * @param {string} text - Le texte.
+     * @param {number} yPosition - Coordonnée Y.
+     * @param {string} selectedFontName - Nom de la police.
+     * @param {number} baseFontSize - Taille de base de la police.
      */
     function drawTextBloc(text, yPosition, selectedFontName, baseFontSize) {
         if (!text) return;
 
         const xPosition = canvas.width / 2;
-        // S'assurer que la police sélectionnée est bien entre guillemets si elle contient des espaces
+        // J'assure que la police sélectionnée est entre guillemets si elle contient des espaces.
         const fontNameForContext = selectedFontName.includes(' ') ? `"${selectedFontName}"` : selectedFontName;
 
-        ctx.font = `bold ${baseFontSize}px ${fontNameForContext}, Impact, ${DEFAULT_FONT_FAMILY_CANVAS}`;
+        ctx.font = `bold ${baseFontSize}px ${fontNameForContext}, Impact, ${DEFAULT_FONT_FAMILY_CANVAS}`; // Impact comme police de repli.
         ctx.textAlign = 'center';
-        ctx.lineJoin = 'round'; // Pour des angles de contour plus doux
+        ctx.lineJoin = 'round'; // Pour des contours plus doux.
         
         // Contour
-        ctx.lineWidth = Math.max(1, baseFontSize * 0.08); // Épaisseur relative au texte
+        ctx.lineWidth = Math.max(1, baseFontSize * 0.08); // Épaisseur contour, relative à la taille du texte.
         ctx.strokeStyle = TEXT_OUTLINE_COLOR_CANVAS;
         ctx.strokeText(text.toUpperCase(), xPosition, yPosition);
 
@@ -194,38 +194,38 @@
     }
 
     /**
-     * Fonction principale pour redessiner tout le mème sur le canvas.
+     * Ma fonction principale pour redessiner le mème sur le canvas.
      */
     function redrawMemeCanvas() {
-        initializeOrClearCanvas(); // Efface et prépare le canvas
-        if (!tempImage.src || tempImage.naturalWidth === 0) return; // Sortir si pas d'image
+        initializeOrClearCanvas(); // J'efface et prépare.
+        if (!tempImage.src || tempImage.naturalWidth === 0) return; // Je sors si pas d'image.
 
-        drawBackgroundImageOnCanvas(); // Dessine l'image de fond
+        drawBackgroundImageOnCanvas(); // Je dessine l'image de fond.
 
-        // Paramètres pour le texte
+        // Mes paramètres pour le texte.
         const selectedFontName = fontSelectionInput ? fontSelectionInput.selectedOptions[0].text : 'Cabilla';
-        const baseFontSize = Math.max(12, canvas.height * 0.08); // Taille de police relative à la hauteur du canvas
-        const textMarginFromEdge = canvas.height * 0.05; // Marge de 5% par rapport aux bords haut/bas
+        const baseFontSize = Math.max(12, canvas.height * 0.08); // Taille police, relative hauteur canvas.
+        const textMarginFromEdge = canvas.height * 0.05; // Marge de 5% (haut/bas).
         
-        // Calcul des positions Y pour les textes
-        // Pour le texte du haut: marge + hauteur approximative de la police
+        // Positions Y des textes.
+        // Texte haut: marge + hauteur approx. police.
         const yTop = textMarginFromEdge + (baseFontSize * 0.8); 
-        // Pour le texte du bas: hauteur du canvas - marge
+        // Texte bas: hauteur canvas - marge.
         const yBottom = canvas.height - textMarginFromEdge;
 
         drawTextBloc(topTextInput.value, yTop, selectedFontName, baseFontSize);
         drawTextBloc(bottomTextInput.value, yBottom, selectedFontName, baseFontSize);
     }
 
-    // --- Gestionnaires d'Événements --- //
+    // --- Mes gestionnaires d'Événements --- //
 
     /**
-     * Se déclenche quand une image est chargée dans l'élément <img id="tempImage">
+     * Déclenché quand l'image est chargée dans tempImage.
      */
     tempImage.onload = () => {
-        // Ajuster les dimensions du canvas à l'image chargée, en respectant une largeur max
+        // J'ajuste les dimensions du canvas à l'image, respectant la largeur max.
         const previewContainer = document.getElementById('meme-preview-container');
-        const containerEffectiveMaxWidth = previewContainer.offsetWidth > 0 ? previewContainer.offsetWidth - 20 : CANVAS_MAX_WIDTH_PREVIEW;
+        const containerEffectiveMaxWidth = previewContainer.offsetWidth > 0 ? previewContainer.offsetWidth - 20 : CANVAS_MAX_WIDTH_PREVIEW; // -20 pour padding conteneur.
 
         let displayWidth = tempImage.naturalWidth;
         let displayHeight = tempImage.naturalHeight;
@@ -239,38 +239,36 @@
             canvas.width = displayWidth;
             canvas.height = displayHeight;
         }
-        redrawMemeCanvas(); // Redessiner avec la nouvelle image
+        redrawMemeCanvas(); // Redessin avec la nouvelle image.
     };
     tempImage.onerror = () => {
-        console.error("Erreur de chargement de l'image pour l'aperçu.");
-        initializeOrClearCanvas("Erreur image");
+        console.error("Erreur chargement image pour aperçu.");
+        initializeOrClearCanvas("Erreur image"); // Message d'erreur sur canvas.
     }
 
     /**
-     * Se déclenche quand l'utilisateur choisit un fichier image.
+     * Déclenché lors du choix d'un fichier image.
      */
     originalImageInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                // Charger l'image dans notre élément <img> temporaire
-                // Cela déclenchera tempImage.onload une fois l'image chargée
-                tempImage.src = e.target.result;
+                // Je définis la source de tempImage, ce qui déclenche tempImage.onload.
+                tempImage.src = e.target.result; 
             }
             reader.onerror = () => {
-                console.error("Erreur de lecture du fichier image.");
-                initializeOrClearCanvas("Erreur fichier");
+                console.error("Erreur lecture fichier image.");
+                initializeOrClearCanvas("Erreur fichier"); // Affiche erreur.
             }
             reader.readAsDataURL(file);
         } else {
-            // Si aucun fichier n'est sélectionné (par ex. l'utilisateur annule)
-            tempImage.src = ""; // Réinitialiser l'image temporaire
-            initializeOrClearCanvas(); // Afficher le message par défaut
+            tempImage.src = ""; // Réinitialisation si aucun fichier.
+            initializeOrClearCanvas(); // Efface le canvas.
         }
     });
 
-    // Redessiner le mème quand les textes ou la police changent
+    // Redessiner si textes ou police changent.
     topTextInput.addEventListener('input', redrawMemeCanvas);
     bottomTextInput.addEventListener('input', redrawMemeCanvas);
     if (fontSelectionInput) {
@@ -278,26 +276,24 @@
     }
 
     /**
-     * Validation du formulaire avant soumission.
+     * Je valide le formulaire avant soumission.
+     * J'empêche soumission si les deux textes sont vides.
      */
     memeForm.addEventListener('submit', function(event) {
         const topText = topTextInput.value.trim();
         const bottomText = bottomTextInput.value.trim();
+        // Validation image gérée par `required` et backend.
+        // Ici, je vérifie si les deux textes sont vides.
         if (!topText && !bottomText) {
-            event.preventDefault(); // Empêche la soumission
-            alert('Veuillez remplir au moins un champ de texte (haut ou bas) pour le mème.');
-            if (!topText) topTextInput.focus(); else bottomTextInput.focus();
-        }
-        // S'assurer que le select de police est actif pour la soumission (au cas où il serait désactivé)
-        if (fontSelectionInput && fontSelectionInput.disabled) {
-            fontSelectionInput.disabled = false;
+            alert("Veuillez remplir au moins un champ de texte (haut ou bas).");
+            event.preventDefault(); // Empêche la soumission.
         }
     });
 
-    // --- Initialisation au chargement de la page --- //
-    window.addEventListener('DOMContentLoaded', () => {
-        initializeOrClearCanvas(); // Affiche "Chargez une image" au début
-    });
+    // J'initialise le canvas au chargement.
+    // Si image pré-chargée par backend (ex: erreur POST),
+    // elle n'est pas re-transmise pour l'aperçu. L'utilisateur doit la re-sélectionner.
+    initializeOrClearCanvas(); 
 
 </script>
 {% endblock %} 
